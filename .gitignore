@@ -1,0 +1,9 @@
+main
+.env
+*.db-journal
+.migration.json
+docs.json
+
+nimcache/
+nimblecache/
+htmldocs/

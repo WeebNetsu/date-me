@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- Add site description -->
+		<meta name="description" content="This page is about..." />
+
+		<!-- Bootstrap -->
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+		<title>My Site</title>
+
+		<link rel="shortcut icon" href="icon.png" type="image/x-icon" />
+
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Error message.
+      </div>
+      
+			<form action="/login" method="post">
+				<div class="form-group">
+					<label for="name">Full name:</label>
+					<input
+						type="text"
+						name="name"
+						placeholder="Mike Kabumba"
+						id="name"
+						required
+						class="form-control"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input
+						type="email"
+						name="email"
+						placeholder="jack@gmail.com"
+						id="email"
+						required
+						class="form-control"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="passwd">Password:</label>
+					<input
+						type="password"
+						name="password"
+						id="passwd"
+						required
+						class="form-control"
+            minlength="8"
+					/>
+				</div>
+				<button type="submit" class="btn btn-primary">Signup</button>
+			</form>
+
+      <hr>
+		</div>
+	</body>
+</html>
