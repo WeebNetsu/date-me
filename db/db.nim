@@ -1,18 +1,26 @@
-import allographer/connection
-import allographer/schema_builder
+import json, asyncdispatch
+import allographer/[connection, schema_builder, query_builder]
 
 from schemas/users import tblUsers
 from schemas/settings import tblSettings
-from schemas/completedLessons import tblCompletedLessons
 
 # todo make below conditional, if test then use sqlite, else use mysql
 let rdb* = dbOpen(Sqlite3, "db/test.db", maxConnections=1, timeout=5000)
 
 rdb.schema([
-    tblUsers,
-    tblSettings,
-    tblCompletedLessons
+  tblUsers,
+  tblSettings,
 ])
+
+# will automatically add this user to table if table is empty
+seeder rdb, "users":
+  waitFor rdb.table("users").insert(@[
+    %*{
+      "fullName": "user",
+      "password": "password",
+      "email": "user@gmail.com",
+    },
+  ])
 
 #[
     # sqlite code for creating tables

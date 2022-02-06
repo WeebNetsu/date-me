@@ -1,6 +1,7 @@
-import prologue, strformat, options, uri
-
+import prologue, strformat, options, allographer/query_builder
 import ./generalUse
+
+from ../db/db import rdb
 
 proc index(ctx: Context) {. async, gcsafe .} =
     if ctx.request.reqMethod == HttpGet:
@@ -15,41 +16,71 @@ proc index(ctx: Context) {. async, gcsafe .} =
 
 
 proc login(ctx: Context) {. async, gcsafe .} =
-    let frmUserName: Option[string] = ctx.getFormItem("name")
-
-    if not isSome(frmUserName):
-        let redirectUrl = parseUri("/signup") ? {"error": "Could not get username"}
-        resp redirect($redirectUrl)
-        return
+    let 
+        pageTitle: string = "Login"
+        pageDesc: string = "Login to find your true love!"
+        pageHTML: string = &"""
+            <form action="/" method="post">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="jack@gmail.com"
+                        id="email"
+                        required  class="form-control"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="passwd">Password:</label>
+                    <input type="password" name="password" id="passwd" required  class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        """
 
     if ctx.request.reqMethod == HttpGet:
         let data: HTMLPage = HTMLPage(
-                title: "Login",
-                desc: "Login to find your true love!",
-                content: &"""
-                    <form action="/" method="post">
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="jack@gmail.com"
-                                id="email"
-                                required  class="form-control"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="passwd">Password:</label>
-                            <input type="password" name="password" id="passwd" required  class="form-control" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                """,
+                title: pageTitle,
+                desc: pageDesc,
+                content: pageHTML,
             )
 
         resp generateHTML(data)
     elif ctx.request.reqMethod == HttpPost:
-        resp "<h1>TODO</h1>"
+        let frmUserName: Option[string] = ctx.getFormItem("name")
+        let frmEmail: Option[string] = ctx.getFormItem("email")
+        let frmPassword: Option[string] = ctx.getFormItem("password")
+
+        if not (isSome(frmUserName) and isSome(frmEmail) and isSome(frmPassword)):
+            resp redirect(generateRedirect("/signup", [("error", "Could not get form data")]))
+            return
+
+        let userExits = await rdb.table("users").find(get(frmEmail), "email")
+
+        if isSome(userExits):
+            resp redirect(generateRedirect("/signup", [("error", "Email already exits")]))
+            return
+
+        try:
+            await rdb.table("users").insert(%*{
+                "fullName": get(frmUserName),
+                "email": get(frmEmail),
+                "password": get(frmPassword),
+            })
+        except Exception as e:
+            echo e.msg
+            resp redirect(generateRedirect("/signup", [("error", "Could not create account")]))
+            return
+
+        let data: HTMLPage = HTMLPage(
+                title: pageTitle,
+                desc: pageDesc,
+                alert: (alert: AlertType.SUCCESS, msg: "Account created! Login to find your true love"),
+                content: pageHTML,
+            )
+
+        resp generateHTML(data)
     else:
         resp "<h1>404! (Unknown request)!</h1>"
 
@@ -78,6 +109,7 @@ proc signup(ctx: Context) {. async, gcsafe .} =
                                 id="name"
                                 required
                                 class="form-control"
+                                maxlength="99"
                             />
                         </div>
                         <div class="form-group">

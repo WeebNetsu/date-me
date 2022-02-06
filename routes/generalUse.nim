@@ -1,4 +1,4 @@
-import strformat, options, prologue
+import strformat, options, prologue, uri
 
 type
     AlertType* = enum NONE, ERROR, INFO, SUCCESS
@@ -11,22 +11,41 @@ type
         content*: string
         alert*: HTMLAlert
 
+#[ generateHTML
+    [description]
+        Will generate HTML code with required boilerplate
+    [parameters]
+        data* <HTMLPage> -> Contains HTML content to add to HTML boilerplate
+    [example]
+        generateHTML(
+                title: "Hello World",
+                desc: "This page has a description,
+                alert: (alert: AlertType.SUCCESS, msg: "Account created! Login to find your true love"),
+                content: "<p>I am very cool</p>",
+            )
+ ]#
 proc generateHTML*(data: HTMLPage): string =
-    var alert: string
-    var alertVer: string = "danger"
+    var 
+        alert: string
+        alertVer: string = "danger"
+        alertCondition: string = "Error"
+
     let alertType = data.alert.alert
 
     if alertType == AlertType.ERROR:
         alertVer = "danger"
+        alertCondition = "ERROR"
     elif  alertType == AlertType.INFO:
         alertVer = "info"
+        alertCondition = "NOTE"
     elif  alertType == AlertType.SUCCESS:
         alertVer = "success"
+        alertCondition = "SUCCESS"
 
     if alertType != AlertType.NONE:
         alert = &"""
             <div class="alert alert-{alertVer}">
-                <strong>Error!</strong> {data.alert.msg}.
+                <strong>{alertCondition}!</strong> {data.alert.msg}.
             </div>
         """
     
@@ -64,6 +83,17 @@ proc generateHTML*(data: HTMLPage): string =
         </html>
     """
 
+#[ getFormItem
+    [description]
+        Will get data from input on a form
+    [parameters]
+        ctx* <Context> -> Context to get passed in data
+        item <string> -> Field to get
+    [example]
+        getFormItem(ctx, "email")
+        ->
+        some("mike@gmail.com")
+ ]#
 proc getFormItem*(ctx: Context, item: string): Option[string] =
     try:
         let data: string = ctx.request.formParams.data[item].body
@@ -71,9 +101,16 @@ proc getFormItem*(ctx: Context, item: string): Option[string] =
     except KeyError:
         return none(string)
 
-proc getQueryFromUrl*(ctx: Context, query: string): Option[string] or Option[int] =
-    try:
-        let data: string = ctx.request.queryParams[query]
-        return some(data)
-    except KeyError:
-        return none(string)
+#[ generateRedirect
+    [description]
+        Will generate a string to redirect the user to an url
+    [parameters]
+        where* <string> -> Where to redirect to
+        params <openArray[(string, string)]> -> Parameters to be passed into url
+    [example]
+        generateRedirect("/signup", [("name", "Jack"), ("error", "Could not connect to server))])
+        ->
+        "/signup?name=Jack&error=Could+not+connect+to+server"
+ ]#
+proc generateRedirect*(where: string, params: openArray[(string, string)]): string =
+    return $(parseUri(where) ? params)
