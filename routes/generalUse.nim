@@ -24,11 +24,12 @@ type
                 content: "<p>I am very cool</p>",
             )
  ]#
-proc generateHTML*(data: HTMLPage): string =
+proc generateHTML*(ctx: Context, data: HTMLPage): string =
     var 
         alert: string
         alertVer: string = "danger"
         alertCondition: string = "Error"
+        navbar: string = ""
 
     let alertType = data.alert.alert
 
@@ -41,6 +42,29 @@ proc generateHTML*(data: HTMLPage): string =
     elif  alertType == AlertType.SUCCESS:
         alertVer = "success"
         alertCondition = "SUCCESS"
+
+    let login = true
+    if login:
+        navbar = """
+            <div class="row">
+				<div class="col">
+					<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="/">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/user/profile">Profile</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/logout">Logout</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+            <br />
+        """
 
     if alertType != AlertType.NONE:
         alert = &"""
@@ -75,6 +99,8 @@ proc generateHTML*(data: HTMLPage): string =
         </head>
             <body>
                 <div class="container">
+                    {navbar}
+
                     {alert}
 
                     {data.content}

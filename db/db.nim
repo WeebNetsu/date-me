@@ -19,6 +19,10 @@ seeder rdb, "users":
       "fullName": "user",
       "password": "password",
       "email": "user@gmail.com",
+      "profilePicture": "/static/images/default.jpg",
+      "likes": "anime,sports,movies",
+      "description": "I want a date pls... I am cool I swear!",
+      "sex": "male",
     },
   ])
 

@@ -1,4 +1,4 @@
-import prologue
+import prologue, prologue/middlewares/[staticfile, signedcookiesession]
 
 import routes/root as rootRoutes
 
@@ -12,6 +12,8 @@ let
     )
 
 var app = newApp(settings = settings)
+
+app.use(staticFileMiddleware(env.getOrDefault("staticDir", "/static")), sessionMiddleware(settings, path = "/"))
 
 app.addRoute(rootRoutes.routes, "/")
 

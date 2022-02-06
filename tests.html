@@ -25,41 +25,83 @@
 	</head>
 	<body>
 		<div class="container">
+			<div class="row">
+				<div class="col">
+					<nav
+						class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center"
+					>
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="/">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/user/profile">Profile</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/logout">Logout</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+
+			<br />
+
 			<div class="alert alert-danger">
 				<strong>Error!</strong> Error message.
 			</div>
-			<form action="/" method="post">
-				<div class="form-group">
-					<label for="email">Email:</label>
-					<input
-						type="email"
-						name="email"
-						placeholder="jack@gmail.com"
-						id="email"
-						required
-						class="form-control"
-					/>
+
+			<div class="row">
+				<div class="row">
+					<div class="col-md-6">
+						<img
+							src="static/images/default.jpg"
+							alt="User Full Name"
+							class="rounded img-fluid"
+						/>
+					</div>
+					<div class="col-md-6">
+						<div class="row">
+							<h2>Marry Jane Wattson</h2>
+							<p><span class="badge badge-secondary">Sex: {userSex}</span></p>
+							<div class="badges">
+								<span class="badge badge-pill badge-primary">Fishing</span>
+								<span class="badge badge-pill badge-success">Anime</span>
+								<span class="badge badge-pill badge-info">Sports</span>
+								<span class="badge badge-pill badge-danger">Coding</span>
+								<span class="badge badge-pill badge-warning">Dancing</span>
+							</div>
+							<p>
+								I am an energetic Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Sit reiciendis ipsam aliquam. Nostrum alias
+								aut quos eius vitae magnam ducimus, totam ea quisquam mollitia
+								illum quaerat maxime, quo laudantium minus. Adipisci minima eum
+								officiis reprehenderit perspiciatis? Aliquam perspiciatis
+								quisquam similique rerum accusamus id! Mollitia repellendus est
+								esse odit voluptatibus, unde quasi impedit ipsum officiis minima
+								eaque, sunt corrupti amet nemo? Dicta quisquam corporis
+								voluptatem perspiciatis perferendis, saepe aspernatur, accusamus
+								sunt unde laudantium delectus dolore doloribus, neque placeat
+								harum consectetur ab cum similique odit iste? Tenetur maiores
+								sequi saepe eos vitae.
+							</p>
+						</div>
+
+						<div class="row">
+							<div class="col">
+								<a href="/"
+									><button class="btn btn-success btn-block">I like</button>
+								</a>
+							</div>
+							<div class="col">
+								<a href="/"
+									><button class="btn btn-danger btn-block">Skip</button>
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="passwd">Password:</label>
-					<input
-						type="password"
-						name="password"
-						id="passwd"
-						required
-						class="form-control"
-					/>
-				</div>
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary">Login</button>
-				</div>
-				<div class="form-group">
-					<label>Don't have an account?</label>
-					<button type="button" class="btn btn-link">
-						<a href="/signup">Signup</a>
-					</button>
-				</div>
-			</form>
+			</div>
 		</div>
 	</body>
 </html>
