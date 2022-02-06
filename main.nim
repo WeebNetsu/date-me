@@ -13,6 +13,7 @@ let
 
 var app = newApp(settings = settings)
 
+# below allows us to provide a directory where images and other files can be accessed from
 app.use(staticFileMiddleware(env.getOrDefault("staticDir", "/static")), sessionMiddleware(settings, path = "/"))
 
 app.addRoute(rootRoutes.routes, "/")

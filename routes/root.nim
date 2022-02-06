@@ -4,25 +4,31 @@ import ./generalUse
 from ../db/db import rdb
 
 proc index(ctx: Context) {. async, gcsafe .} =
+    # currently the index page shows the users own data instead of other users data
+    # todo: move displaying user data to profile page, replace below with data of other users
     if ctx.request.reqMethod == HttpGet:
         try:
+            # try to get user in DB, if their userID does not exist in the session a KeyError will be thrown
+            # and they will be redirected to the login page
             let userDetails = await rdb.table("users").find(parseInt(ctx.session["userId"]), "id")
+
+            # check if the db returned anything, if not, return to login page
             if not isSome(userDetails):
                 resp redirect(generateRedirect("/login", [("error", "Could not find your user... Try logging in again")]))
                 return
 
-            let 
-                user = parseJson($get(userDetails))
-                likes: seq[string] = getStr(user["likes"]).split(',')
+            let
+                user = parseJson($get(userDetails)) # get user
+                likes: seq[string] = getStr(user["likes"]).split(',') # get user likes and convert it to an sequence
                 likeColors: array[5, string] = ["primary", "success", "info", "danger", "warning"]
 
             var badges = ""
             for index, like in likes:
+                # only 5 likes/hobbies are allowed at a time
                 if index >= 5:
                     break
 
                 badges &= &"""<span class="badge badge-pill badge-{likeColors[index]}">{like}</span> """
-            echo user
             
             let pageHTML: string = &"""
                 <div class="row">
@@ -71,6 +77,7 @@ proc index(ctx: Context) {. async, gcsafe .} =
 
             resp generateHTML(ctx, data)
         except KeyError:
+            # this error can be triggered by a lot of item in the above code
             resp redirect(generateRedirect("/login", [("error", "Please log in to start dating")]))
             return
         except:
@@ -95,13 +102,9 @@ proc index(ctx: Context) {. async, gcsafe .} =
             return
 
         ctx.session["userId"] = $(user["id"].getInt())
-        # ctx.setCookie("userId", $(user["id"].getInt()))
-        # echo "COOKIE: ", ctx.getCookie("userId")
         resp redirect(generateRedirect("/", []))
-        # ctx.setCookie("userId", get(userDetails))
     else:
         resp "<h1>404! (Unknown request)!</h1>"
-
 
 proc login(ctx: Context) {. async, gcsafe .} =
     let 
@@ -141,6 +144,7 @@ proc login(ctx: Context) {. async, gcsafe .} =
 				</div>
 			</form>
         """
+        # get queries passed in (eg. ?error=some+error)
         queries: StringTableRef = ctx.request.queryParams
     var 
         err: string
@@ -159,22 +163,26 @@ proc login(ctx: Context) {. async, gcsafe .} =
             )
 
         resp generateHTML(ctx, data)
-    elif ctx.request.reqMethod == HttpPost:
+    elif ctx.request.reqMethod == HttpPost: # if post method, then the user is busy signing up
+        # get form data
         let frmUserName: Option[string] = ctx.getFormItem("name")
         let frmEmail: Option[string] = ctx.getFormItem("email")
         let frmPassword: Option[string] = ctx.getFormItem("password")
 
+        # if they somehow submitted the form without filling out all the fields, return to signup
         if not (isSome(frmUserName) and isSome(frmEmail) and isSome(frmPassword)):
             resp redirect(generateRedirect("/signup", [("error", "Could not get form data")]))
             return
 
         let userExits = await rdb.table("users").find(get(frmEmail), "email")
 
+        # check if user account already exists
         if isSome(userExits):
             resp redirect(generateRedirect("/signup", [("error", "Email already exits")]))
             return
 
         try:
+            # add user to database
             await rdb.table("users").insert(%*{
                 "fullName": get(frmUserName),
                 "email": get(frmEmail),
@@ -262,7 +270,6 @@ proc signup(ctx: Context) {. async, gcsafe .} =
         resp "<h1>404! (Unknown request)!</h1>"
 
 const routes* = @[
-    # NOTE: routes has to be GC-safe!
     pattern("", index, @[HttpGet, HttpPost]),
     pattern("login", login, @[HttpGet, HttpPost]),
     pattern("signup", signup, @[HttpGet]),
