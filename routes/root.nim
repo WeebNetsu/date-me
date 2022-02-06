@@ -20,23 +20,38 @@ proc login(ctx: Context) {. async, gcsafe .} =
         pageTitle: string = "Login"
         pageDesc: string = "Login to find your true love!"
         pageHTML: string = &"""
-            <form action="/" method="post">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="jack@gmail.com"
-                        id="email"
-                        required  class="form-control"
-                    />
-                </div>
-                <div class="form-group">
-                    <label for="passwd">Password:</label>
-                    <input type="password" name="password" id="passwd" required  class="form-control" />
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
+			<form action="/" method="post">
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input
+						type="email"
+						name="email"
+						placeholder="jack@gmail.com"
+						id="email"
+						required
+						class="form-control"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="passwd">Password:</label>
+					<input
+						type="password"
+						name="password"
+						id="passwd"
+						required
+						class="form-control"
+					/>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary">Login</button>
+				</div>
+				<div class="form-group">
+					<label>Don't have an account?</label>
+					<button type="button" class="btn btn-link">
+						<a href="/signup">Signup</a>
+					</button>
+				</div>
+			</form>
         """
 
     if ctx.request.reqMethod == HttpGet:
@@ -131,10 +146,16 @@ proc signup(ctx: Context) {. async, gcsafe .} =
                                 id="passwd"
                                 required
                                 class="form-control"
-                    minlength="8"
+                                minlength="8"
                             />
                         </div>
-                        <button type="submit" class="btn btn-primary">Signup</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Signup</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Already have an account?</label>
+                            <button type="button" class="btn btn-link"><a href="/login">Login</a></button>
+                        </div>
                     </form>
                 """,
             )
