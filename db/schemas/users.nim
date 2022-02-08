@@ -8,5 +8,5 @@ let tblUsers* = table("users", [
     Column().string("profilePicture").nullable(),
     Column().string("description").nullable(),
     Column().string("likes").nullable(),
-    Column().enumField("sex", ["male", "female", "other"]).nullable(),
+    Column().enumField("hasDong", ["yes", "no", "unknown"]),
 ])

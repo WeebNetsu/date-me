@@ -13,12 +13,12 @@ rdb.schema([
 seeder rdb, "users":
   waitFor rdb.table("users").insert(@[
     %*{
-      "fullName": "user",
+      "fullName": "Mike Sewer Labruska",
       "password": "password",
       "email": "user@gmail.com",
       "profilePicture": "/static/images/default.jpg",
-      "likes": "anime,sports,movies",
-      "description": "I want a date pls... I am cool I swear!",
-      "sex": "male",
+      "likes": "anime,sports,movies,gaming,drinking",
+      "description": "I want a date pls... I am cool I swear! I am actually a very sexy male, this profile picture is just to get your attention! Please go out with me!",
+      "hasDong": "yes",
     },
   ])

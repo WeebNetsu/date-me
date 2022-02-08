@@ -22,6 +22,15 @@ proc index(ctx: Context) {. async, gcsafe .} =
                 likes: seq[string] = getStr(user["likes"]).split(',') # get user likes and convert it to an sequence
                 likeColors: array[5, string] = ["primary", "success", "info", "danger", "warning"]
 
+            var hasDong: string
+            
+            if getStr(user["hasDong"]) == "no": 
+                hasDong = "No Dong"
+            elif getStr(user["hasDong"]) == "yes":
+                hasDong = "Has Dong"
+            else:
+                hasDong = "Unknown"
+
             var badges = ""
             for index, like in likes:
                 # only 5 likes/hobbies are allowed at a time
@@ -43,7 +52,7 @@ proc index(ctx: Context) {. async, gcsafe .} =
                         <div class="col-md-6">
                             <div class="row">
                                 <h2>{getStr(user["fullName"])}</h2>
-                                <p><span class="badge badge-secondary">Sex: {getStr(user["sex"])}</span></p>
+                                <p><span class="badge badge-secondary">{hasDong}</span></p>
                                 <div class="badges">
                                     {badges}
                                 </div>
@@ -187,6 +196,7 @@ proc login(ctx: Context) {. async, gcsafe .} =
                 "fullName": get(frmUserName),
                 "email": get(frmEmail),
                 "password": get(frmPassword),
+                "hasDong": "unknown",
             })
         except Exception as e:
             echo e.msg
@@ -221,7 +231,7 @@ proc signup(ctx: Context) {. async, gcsafe .} =
                 content: &"""
                     <form action="/login" method="post">
                         <div class="form-group">
-                            <label for="name">Full name:</label>
+                            <label for="name">Full name (cannot be changed later):</label>
                             <input
                                 type="text"
                                 name="name"

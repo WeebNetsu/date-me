@@ -46,23 +46,19 @@ proc generateHTML*(ctx: Context, data: HTMLPage): string =
     let login = true
     if login:
         navbar = """
-            <div class="row">
-				<div class="col">
-					<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
-						<ul class="navbar-nav">
-							<li class="nav-item">
-								<a class="nav-link" href="/">Home</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="/user/profile">Profile</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="/logout">Logout</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
-			</div>
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/profile">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
             <br />
         """
 
@@ -98,9 +94,9 @@ proc generateHTML*(ctx: Context, data: HTMLPage): string =
             <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
         </head>
             <body>
-                <div class="container">
-                    {navbar}
+                {navbar}
 
+                <div class="container">
                     {alert}
 
                     {data.content}
