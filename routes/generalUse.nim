@@ -1,15 +1,12 @@
 import strformat, options, prologue, uri
 
 type
-    AlertType* = enum NONE, ERROR, INFO, SUCCESS
-    HTMLAlert* = tuple
-        alert: AlertType
-        msg: string
+    AlertType = enum NONE, ERROR, INFO, SUCCESS
     HTMLPage* = object
         title*: string
         desc*: string
         content*: string
-        alert*: HTMLAlert
+        queries*: StringTableRef
 
 #[ generateHTML
     [description]
@@ -25,25 +22,9 @@ type
             )
  ]#
 proc generateHTML*(ctx: Context, data: HTMLPage): string =
-    var 
-        alert: string
-        alertVer: string = "danger"
-        alertCondition: string = "Error"
-        navbar: string = ""
-
-    let alertType = data.alert.alert
-
-    if alertType == AlertType.ERROR:
-        alertVer = "danger"
-        alertCondition = "ERROR"
-    elif  alertType == AlertType.INFO:
-        alertVer = "info"
-        alertCondition = "NOTE"
-    elif  alertType == AlertType.SUCCESS:
-        alertVer = "success"
-        alertCondition = "SUCCESS"
-
+    var navbar: string = ""
     let login = true
+
     if login:
         navbar = """
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
@@ -62,10 +43,35 @@ proc generateHTML*(ctx: Context, data: HTMLPage): string =
             <br />
         """
 
+    var
+        alert: string
+        alertVer: string = "danger"
+        alertCondition: string = "Error"
+        alertMsg: string
+        alertType: AlertType = AlertType.NONE
+
+    let queries: StringTableRef = data.queries
+    if not (queries == nil):
+        if queries.contains("success"):
+            alertVer = "success"
+            alertMsg = queries["success"]
+            alertCondition = "SUCCESS"
+            alertType = AlertType.SUCCESS
+        elif queries.contains("info"):
+            alertVer = "info"
+            alertMsg = queries["info"]
+            alertCondition = "NOTE"
+            alertType = AlertType.INFO
+        elif queries.contains("error"):
+            alertVer = "danger"
+            alertCondition = "ERROR"
+            alertMsg = queries["error"]
+            alertType = AlertType.ERROR
+
     if alertType != AlertType.NONE:
         alert = &"""
             <div class="alert alert-{alertVer}">
-                <strong>{alertCondition}!</strong> {data.alert.msg}.
+                <strong>{alertCondition}!</strong> {alertMsg}.
             </div>
         """
     
@@ -134,5 +140,5 @@ proc getFormItem*(ctx: Context, item: string): Option[string] =
         ->
         "/signup?name=Jack&error=Could+not+connect+to+server"
  ]#
-proc generateRedirect*(where: string, params: openArray[(string, string)]): string =
+proc generateRedirect*(where: string, params: openArray[(string, string)] = []): string =
     return $(parseUri(where) ? params)

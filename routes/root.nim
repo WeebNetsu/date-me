@@ -153,21 +153,13 @@ proc login(ctx: Context) {. async, gcsafe .} =
 				</div>
 			</form>
         """
-        # get queries passed in (eg. ?error=some+error)
-        queries: StringTableRef = ctx.request.queryParams
-    var 
-        err: string
-        alertType = AlertType.NONE
-
-    if queries.contains("error"):
-        err = queries["error"]
-        alertType = AlertType.ERROR
 
     if ctx.request.reqMethod == HttpGet:
         let data: HTMLPage = HTMLPage(
                 title: pageTitle,
                 desc: pageDesc,
-                alert: (alertType, err),
+                # get queries passed in (eg. ?error=some+error)
+                queries: ctx.request.queryParams,
                 content: pageHTML,
             )
 
@@ -203,31 +195,16 @@ proc login(ctx: Context) {. async, gcsafe .} =
             resp redirect(generateRedirect("/signup", [("error", "Could not create account")]))
             return
 
-        let data: HTMLPage = HTMLPage(
-                title: pageTitle,
-                desc: pageDesc,
-                alert: (alert: AlertType.SUCCESS, msg: "Account created! Login to find your true love"),
-                content: pageHTML,
-            )
-
-        resp generateHTML(ctx, data)
+        resp redirect(generateRedirect("/login", [("success", "Account created! Login to find your true love")]))
     else:
         resp "<h1>404! (Unknown request)!</h1>"
 
 proc signup(ctx: Context) {. async, gcsafe .} =
-    let queries: StringTableRef = ctx.request.queryParams
-    var err: string
-    var alertType = AlertType.NONE
-
-    if queries.contains("error"):
-        err = queries["error"]
-        alertType = AlertType.ERROR
-
     if ctx.request.reqMethod == HttpGet:
         let data: HTMLPage = HTMLPage(
                 title: "Signup",
                 desc: "Signup to find your true love!",
-                alert: (alertType, err),
+                queries: ctx.request.queryParams,
                 content: &"""
                     <form action="/login" method="post">
                         <div class="form-group">
