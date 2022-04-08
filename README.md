@@ -1,5 +1,9 @@
 # Date Me
 
+## Nim version?
+
+This was the original version of the website, coded in Nim, but has been converted to Go
+
 ## Minimal?
 
 Yes! This project is just me trying to create a website using Nim, all design is done by basic HTML and Bootstrap, everything else is coded in Nim! The idea is so I don't have to do any frontend, and focus on the fun part of the project :)
@@ -11,7 +15,6 @@ I rolled a dice, with each number having a project linked to it, and it rolled a
 ## Setup
 
 Install requirements (make sure you have nim and nimble installed).
-
 
 `nimble install prologue allographer`
 
