@@ -2,13 +2,60 @@
 <html lang="en">
 	<head>
 		{{ template "head.html" }}
+		<!-- dynamic data can't be in components? -->
 	</head>
 	<body>
 		<!-- navigation -->
 		{{ template "nav.html" }}
 
 		<!-- Content -->
-		<h1>{{ .Title }}</h1>
+		<div class="row">
+			<div class="row">
+				<div class="col-md-6">
+					<!-- <img
+						src="{getStr(user['profilePicture'])}"
+						alt="{getStr(user['fullName'])}"
+						class="rounded img-fluid"
+					/> -->
+				</div>
+				<div class="col-md-6">
+					<div class="row">
+						<h2>{{ .Data.FullName }}</h2>
+						<p>
+							<span class="badge badge-secondary">
+								{{ .Data.HasDong }}
+							</span>
+						</p>
+						<div class="badges">
+							{{ range $ind, $like := .Data.Likes }}
+							<span
+								class="badge badge-pill badge-{{index $.Data.Colors $ind}}"
+								>{{$like}}
+							</span>
+							{{end}}
+						</div>
+						<p>{{.Data.Description}}</p>
+					</div>
+
+					<div class="row">
+						<div class="col">
+							<a href="/"
+								><button class="btn btn-success btn-block">
+									I like
+								</button>
+							</a>
+						</div>
+						<div class="col">
+							<a href="/"
+								><button class="btn btn-danger btn-block">
+									Skip
+								</button>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<!-- alert -->
 		{{ template "alert.html" }}
