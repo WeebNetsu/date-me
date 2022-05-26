@@ -59,7 +59,7 @@ func HandleIndexPage(c *gin.Context) {
 		FullName:       "Jack Mike",
 		Password:       "password",
 		Email:          "jack@gmail.com",
-		ProfilePicture: "",
+		ProfilePicture: "default.jpg",
 		Description:    "I am cool",
 		Likes:          "food,games,tv",
 		HasDong:        NO_DONG,
